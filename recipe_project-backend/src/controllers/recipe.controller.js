@@ -232,11 +232,32 @@ const updateRecipe = async (req, res) => {
     }
 };
 
+const deleteRecipe = async (req, res) => {
+    const { idRecipe } = req.params;
+    console.log(idRecipe)
 
+    try {
+        await Recipe.destroy({
+            where: {
+                id_recipe: idRecipe
+            }
+        });
+
+        res.status(200).json({
+            status: 200,
+            ok: true,
+            message: "Receta eliminada"
+        });
+
+    } catch( error ) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 
 module.exports = {
     createRecipe,
     getAllRecipesPerson,
-    updateRecipe
+    updateRecipe,
+    deleteRecipe
 };

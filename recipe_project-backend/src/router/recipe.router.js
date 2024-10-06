@@ -11,4 +11,7 @@ router.post('/getRecipe/:idPerson', recipeController.getAllRecipesPerson);
 // Ruta para actualizar ciertos datos de una receta
 router.put('/updateRecipe/:idRecipe', recipeController.updateRecipe);
 
+// Ruta para eliminar una receta
+router.delete('/deleteRecipe/:idRecipe', recipeController.deleteRecipe);
+
 module.exports = router;
