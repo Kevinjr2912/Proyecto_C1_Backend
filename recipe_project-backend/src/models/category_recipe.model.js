@@ -11,5 +11,13 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, { timestamps: false });
 
+    CategoryRecipe.associate = ( models ) => {
+        CategoryRecipe.hasMany( models.Recipe, {
+            foreignKey: 'id_category_recipe',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    }
+
     return CategoryRecipe;
 }

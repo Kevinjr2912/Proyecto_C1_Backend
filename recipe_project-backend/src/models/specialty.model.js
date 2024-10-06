@@ -11,5 +11,14 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, { timestamps: false });
 
+    // DEFINIMOS LAS ASOCIACIONES DE SPECIALTIES
+    Specialty.associate = ( models ) => {
+        Specialty.hasMany( models.Person, {
+            foreignKey: 'id_specialty',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    }
+
     return Specialty;
 }

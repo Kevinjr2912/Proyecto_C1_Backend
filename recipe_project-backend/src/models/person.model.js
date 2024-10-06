@@ -17,9 +17,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        middle_surname_person: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         date_birth: {
             type: DataTypes.DATEONLY,
             allowNull: false
+        },
+        id_nationality: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Nationalities',
+                key: 'id_nationality' 
+            }
         },
         id_specialty: {
             type: DataTypes.INTEGER,
@@ -28,16 +40,29 @@ module.exports = (sequelize, DataTypes) => {
                 model: 'Specialties',
                 key: 'id_specialty'
             }
-        },
-        id_nacionality: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Nationalities',
-                key: 'id_nationality'
-            }
         }
     },{ timestamps: false });
+
+    // DEFINIMOS LAS ASOCIACIONES DE PEOPLE
+    Person.associate = ( models ) => {
+        Person.belongsTo( models.Nationality, {
+            foreignKey: 'id_nationality',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+
+        Person.belongsTo( models.Specialty, {
+            foreignKey: 'id_specialty',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+
+        Person.hasMany( models.Recipe, {
+            foreignKey: 'id_person',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        })
+    }
 
     return Person;
 }

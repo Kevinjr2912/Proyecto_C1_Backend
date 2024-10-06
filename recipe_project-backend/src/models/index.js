@@ -15,13 +15,20 @@ db.ORM = Sequelize;
 db.connection = sequelize;
 
 // Importar modelos
-db.Person = require('./person.model')(sequelize, Sequelize);
-db.Recipe = require('./recipe.model')(sequelize, Sequelize);
-db.Ingredient = require('./ingredient.model')(sequelize, Sequelize);
-db.RecipeIngredient = require('./recipe_ingredient.model')(sequelize, Sequelize);
-db.Difficulty = require('./difficulty.model')(sequelize, Sequelize);
+db.TypeDifficulty = require('./difficulty.model')(sequelize, Sequelize);
 db.Nationality = require('./nationality.model')(sequelize, Sequelize);
 db.Specialty = require('./specialty.model')(sequelize, Sequelize);
 db.CategoryRecipe = require('./category_recipe.model')(sequelize, Sequelize);
+db.Person = require('./person.model')(sequelize, Sequelize);
+db.RecipeIngredient = require('./recipe_ingredient.model')(sequelize, Sequelize);
+db.Recipe = require('./recipe.model')(sequelize, Sequelize);
+db.Ingredient = require('./ingredient.model')(sequelize, Sequelize);
+
+// Establecer asociaciones
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
 module.exports = db;

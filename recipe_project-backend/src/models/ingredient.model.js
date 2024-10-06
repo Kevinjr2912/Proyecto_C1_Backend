@@ -11,5 +11,16 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, { timestamps: false });
 
+    // Definir asociaciones
+    Ingredient.associate = (models) => {
+        Ingredient.belongsToMany(models.Recipe, {
+            through: models.RecipeIngredient,
+            foreignKey: 'id_ingredient',
+            otherKey: 'id_recipe',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    };    
+
     return Ingredient;
-}
+};

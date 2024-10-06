@@ -11,5 +11,13 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, { timestamps: false });
 
+    Nationality.associate = ( models ) => {
+        Nationality.hasMany( models.Person , {
+            foreignKey: 'id_nationality',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    };
+
     return Nationality;
 }

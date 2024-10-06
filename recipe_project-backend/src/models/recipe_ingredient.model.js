@@ -20,16 +20,22 @@ module.exports = (sequelize, DataTypes) => {
                 model: 'Ingredients',
                 key: 'id_ingredient'
             }
-        },
-        name_unit_measure: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        portion: {
-            type: DataTypes.STRING,
-            allowNull: false
         }
     }, { timestamps: false });
 
+    RecipeIngredient.associate = (models) => {
+        RecipeIngredient.belongsTo(models.Recipe, {
+            foreignKey: 'id_recipe',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    
+        RecipeIngredient.belongsTo(models.Ingredient, {
+            foreignKey: 'id_ingredient',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    };
+
     return RecipeIngredient;
-}
+};
