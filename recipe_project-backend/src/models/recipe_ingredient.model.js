@@ -5,6 +5,14 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
+        count_ingredient: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        unit_measurement: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         id_recipe: {
             type: DataTypes.INTEGER,
             allowNull: false,

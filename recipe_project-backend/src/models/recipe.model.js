@@ -13,14 +13,6 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id_person'
             }
         },
-        id_category_recipe: { 
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'CategoryRecipes',
-                key: 'id_category_recipe' 
-            }
-        },
         id_difficulty: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -44,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         time_duration: {
             type: DataTypes.TIME,
             allowNull: false
+        },
+        number_portion: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, { timestamps: false });
 
@@ -51,12 +47,6 @@ module.exports = (sequelize, DataTypes) => {
     Recipe.associate = (models) => {
         Recipe.belongsTo(models.Person, {
             foreignKey: 'id_person',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        });
-
-        Recipe.belongsTo(models.CategoryRecipe, {
-            foreignKey: 'id_category_recipe',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         });

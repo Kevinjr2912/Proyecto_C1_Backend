@@ -18,7 +18,6 @@ db.connection = sequelize;
 db.TypeDifficulty = require('./difficulty.model')(sequelize, Sequelize);
 db.Nationality = require('./nationality.model')(sequelize, Sequelize);
 db.Specialty = require('./specialty.model')(sequelize, Sequelize);
-db.CategoryRecipe = require('./category_recipe.model')(sequelize, Sequelize);
 db.Person = require('./person.model')(sequelize, Sequelize);
 db.RecipeIngredient = require('./recipe_ingredient.model')(sequelize, Sequelize);
 db.Recipe = require('./recipe.model')(sequelize, Sequelize);

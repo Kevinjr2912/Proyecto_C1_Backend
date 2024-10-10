@@ -1,14 +1,17 @@
-const { where } = require('sequelize');
-const { Recipe, Ingredient, RecipeIngredient, Nationality, Specialty, Person } = require('../models');
+const { Recipe, Ingredient, RecipeIngredient, Nationality, Specialty, Person, TypeDifficulty } = require('../models');
 
 const createRecipe = async (req, res) => {
     try {
+        // Desestructurmos el idPerson que recibimos como parametro
+        const { idPerson } = req.params;
+        console.log(req.body)
+
         // Desestructuramos el cuerpo que recibimos en la solicitud
         const {
-            id_person,
             id_type_recipe,
             id_difficulty,
             name_recipe,
+            number_portion,
             description,
             preparation,
             time_duration,
@@ -17,17 +20,18 @@ const createRecipe = async (req, res) => {
 
         // Creamos la receta
         const recipe = await Recipe.create({
-            id_person,
+            id_person: idPerson,
             id_type_recipe,
             id_difficulty,
             name_recipe,
+            number_portion,
             description,
             preparation,
             time_duration
         });
 
         // Iteramos sobre el arreglo de ingredientes
-        const recipeIngredientsPromises = ingredients.map(async ({ name_ingredient }) => {
+        const recipeIngredientsPromises = ingredients.map(async ({ name_ingredient, count_ingredient,  unit_measurement}) => {
 
             let ingredient = await Ingredient.findOne({
                 where: {
@@ -44,7 +48,9 @@ const createRecipe = async (req, res) => {
             // Creamos la relación entre receta e ingrediente
             return RecipeIngredient.create({
                 id_recipe: recipe.id_recipe,
-                id_ingredient: ingredient.id_ingredient
+                id_ingredient: ingredient.id_ingredient,
+                count_ingredient: count_ingredient,
+                unit_measurement: unit_measurement
             });
         });
 
@@ -62,13 +68,70 @@ const createRecipe = async (req, res) => {
     }
 };
 
-// Controlador para obtener todas las recetas de una persona
-const getAllRecipesPerson = async (req, res) => {
-    const { idPerson } = req.params;  // Obtener id de persona
+// Controlador para obtener la información específica de una receta
+const getInformationRecipe = async (req, res) => {
+    const { idRecipe } = req.params;
 
     try {
-        // Buscar la persona con sus recetas y relaciones asociadas
-        const personWithRecipes = await Person.findByPk(idPerson, {
+        const infoRecipe = await Recipe.findByPk(idRecipe, {
+            attributes: [
+                'name_recipe',
+                'description',
+                'preparation',
+                'time_duration',
+                'number_portion'
+            ],
+            include: [
+                {
+                    model: TypeDifficulty,
+                    attributes: ['name_type_difficulty']
+                },
+                {
+                    model: Ingredient,
+                    through: {
+                        model: RecipeIngredient,
+                        attributes: []
+                    },
+                    attributes: ['name_ingredient']
+                }
+            ]
+        });
+
+        res.status(200).json(infoRecipe);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Controlador para obtener el nombre de las recetas de una persona
+const getRecipePublished = async (req, res) => {
+    const { idPerson } = req.params;
+
+    try {
+        const personWithRecipes = await Recipe.findAll({
+            where: {'id_person': idPerson},
+            attributes: [
+                'id_recipe',
+                'name_recipe',
+            ]  
+        });
+
+        res.status(200).json(personWithRecipes);
+
+    } catch( error ){
+        res.status(500).json({ error: error.message });
+    }
+}
+
+//Controlador para obtener la información
+const getInformationPersonAndRecipe = async (req,res) => {
+    const { idPerson, idRecipe } = req.params; 
+    console.log("Esto es lo que recibe la ruta: " + req.params.idPeconsrson)
+
+    try {
+        const personWithRecipe = await Person.findByPk(idPerson, {
             attributes: [
                 'first_name_person',
                 'middle_name_person',
@@ -78,11 +141,15 @@ const getAllRecipesPerson = async (req, res) => {
             include: [
                 {
                     model: Nationality,
-                    attributes: ['name_nationality']
+                    attributes: [
+                        'name_nationality'
+                    ]
                 },
                 {
                     model: Specialty,
-                    attributes: ['name_type_specialty']
+                    attributes: [
+                        'name_type_specialty'
+                    ]
                 },
                 {
                     model: Recipe,
@@ -90,32 +157,35 @@ const getAllRecipesPerson = async (req, res) => {
                         'name_recipe',
                         'description',
                         'preparation',
-                        'time_duration'
+                        'time_duration',
+                        'number_portion'
                     ],
-                    include: {
-                        model: Ingredient,
-                        through: {
-                            model: RecipeIngredient
+                    include: [
+                        {
+                            model: TypeDifficulty,
+                            attributes: ['name_type_difficulty']
                         },
-                        attributes: ['name_ingredient']
+                        {
+                            model: Ingredient,
+                            through: {
+                                model: RecipeIngredient,
+                                attributes: []
+                            },
+                            attributes: ['name_ingredient']
+                        }
+                    ],
+                    where: {
+                        'id_recipe': idRecipe
                     }
                 }
             ]
         });
 
-        // Verificar si se encontró la persona
-        if (!personWithRecipes) {
-            return res.status(404).json({ error: 'Persona no encontrada' });
-        }
-
-        // Responder con la información de la persona y sus recetas
-        res.status(200).json(personWithRecipes);
-
-    } catch (error) {
-        console.error(error);
+        res.status(200).json(personWithRecipe);
+    } catch( error ) {
         res.status(500).json({ error: error.message });
     }
-};
+}
 
 // Controlador para actualizar una receta
 const updateRecipe = async (req, res) => {
@@ -254,10 +324,11 @@ const deleteRecipe = async (req, res) => {
     }
 }
 
-
 module.exports = {
     createRecipe,
-    getAllRecipesPerson,
+    getInformationRecipe,
+    getInformationPersonAndRecipe,
+    getRecipePublished,
     updateRecipe,
     deleteRecipe
 };
