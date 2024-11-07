@@ -61,7 +61,13 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_person',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
-        })
+        });
+
+        Person.hasMany(models.Comment, {
+            foreignKey: 'id_person',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
     }
 
     return Person;

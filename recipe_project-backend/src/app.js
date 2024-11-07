@@ -3,18 +3,17 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
 const recipeRouter = require('./router/recipe.router');
+const commentRouter = require('./router/comment.router');
 
 // Configurar CORS
 app.use(cors({
-  origin: 'http://localhost:4200' // Permitir solicitudes desde esta URL
+  origin: 'http://localhost:4200'
 }));
-
-// O permitir solicitudes desde cualquier origen (menos recomendado para producción)
-app.use(cors());
 
 app.use(bodyParser.json())
 
 //Cargar rutas
 app.use('/recipes', recipeRouter);
+app.use('/comments', commentRouter);
 
 module.exports = app;

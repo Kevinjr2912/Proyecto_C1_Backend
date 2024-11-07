@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "amigoban",
+    "username": "admin",
+    "password": "amigoban2912",
     "database": "recipe_database",
-    "host": "127.0.0.1",
+    "host": "database-recipe.cexiqnpjaigs.us-east-1.rds.amazonaws.com",
     "dialect": "mysql"
   }
 }

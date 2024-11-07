@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id_difficulty'
             }
         },
+        id_category_recipe: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'CategoryRecipes',
+                key: 'id_category_recipe'
+            }
+        },
         name_recipe: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -57,13 +65,25 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'CASCADE'
         });
 
+        Recipe.belongsTo(models.CategoryRecipe, {
+            foreignKey: 'id_category_recipe',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+
         Recipe.belongsToMany(models.Ingredient, {
             through: models.RecipeIngredient,
             foreignKey: 'id_recipe',  
             otherKey: 'id_ingredient',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
-        });        
+        });  
+        
+        Recipe.hasMany(models.Comment, {
+            foreignKey: 'id_recipe',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
     }
 
     return Recipe;
